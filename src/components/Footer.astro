@@ -1,0 +1,17 @@
+---
+import { company } from '../data/content.js';
+const year = new Date().getFullYear();
+---
+<footer>
+  <div class="container row">
+    <p><strong>{company.name}</strong> · {company.tagline}</p>
+    <p>© {year} {company.name}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  footer { background: var(--navy-deep); color: #9aa4ba; padding: 1.8rem 0; font-size: 0.88rem; }
+  .row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.6rem; }
+  p { margin: 0; }
+  strong { color: #fff; }
+</style>

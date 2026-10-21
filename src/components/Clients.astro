@@ -1,0 +1,45 @@
+---
+import ProjectsExplorer from './ProjectsExplorer.jsx';
+import { projects, clients, partners } from '../data/content.js';
+---
+<section class="section" id="projects">
+  <div class="container">
+    <div class="head reveal">
+      <span class="eyebrow">Track record</span>
+      <h2>Trusted by schools, counties and businesses</h2>
+      <p class="lead">We have worked with high-profile national and international brands. A selection of our installations:</p>
+    </div>
+    <ProjectsExplorer client:visible projects={projects} />
+
+    <h3 class="sub reveal">Our clients</h3>
+    <ul class="pills reveal">
+      {clients.map((c) => <li>{c}</li>)}
+    </ul>
+  </div>
+</section>
+
+<section class="section soft" id="partners">
+  <div class="container">
+    <div class="head reveal">
+      <span class="eyebrow">Key partners</span>
+      <h2>Built on world-class technology</h2>
+      <p class="lead">We are associated with well-known brands across cabling, networking, security and AV.</p>
+    </div>
+    <ul class="logos reveal">
+      {partners.map((p) => <li>{p}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .head { margin-bottom: 2rem; }
+  .sub { margin-top: 3rem; }
+  .pills, .logos { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .pills li { border: 1px solid var(--line); background: #fff; padding: 0.45rem 1rem; border-radius: 999px; font-size: 0.88rem; font-weight: 500; }
+  .logos li {
+    background: #fff; border: 1px solid var(--line); border-radius: 12px;
+    padding: 0.8rem 1.3rem; font-weight: 800; color: var(--navy); letter-spacing: 0.02em;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .logos li:hover { transform: translateY(-3px); border-color: var(--yellow); }
+</style>

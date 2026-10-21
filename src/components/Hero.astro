@@ -1,0 +1,54 @@
+---
+import { company, keyBenefits } from '../data/content.js';
+---
+<section class="hero" id="top">
+  <div class="shapes" aria-hidden="true">
+    <span class="tri t1"></span><span class="tri t2"></span><span class="tri t3"></span><span class="tri t4"></span>
+  </div>
+  <div class="container inner">
+    <div class="copy">
+      <span class="eyebrow">ELV &amp; ICT Systems Integrator · Kenya</span>
+      <h1>{company.tagline}</h1>
+      <p class="lead">{company.subtagline}</p>
+      <div class="cta">
+        <a href="#contact" class="btn btn-primary">Request a quote</a>
+        <a href="#solutions" class="btn btn-ghost">Explore solutions</a>
+      </div>
+    </div>
+    <aside class="panel" aria-label="Key benefits">
+      <h2>Key benefits</h2>
+      <ul>
+        {keyBenefits.map((b) => <li>{b}</li>)}
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; overflow: hidden; background: var(--navy); color: #fff; padding: clamp(3.5rem, 9vw, 7rem) 0; }
+  .hero h1 { color: #fff; }
+  .hero .lead { color: #c8cfdf; }
+  .inner { position: relative; display: grid; gap: 3rem; grid-template-columns: 1.3fr 1fr; align-items: center; }
+  .cta { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.6rem; }
+  .panel {
+    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14);
+    border-left: 6px solid var(--yellow); border-radius: var(--radius); padding: 1.6rem 1.8rem;
+  }
+  .panel h2 { font-size: 1rem; color: var(--yellow); text-transform: uppercase; letter-spacing: 0.14em; }
+  .panel ul { list-style: none; margin: 0; padding: 0; }
+  .panel li { padding: 0.65rem 0 0.65rem 1.9rem; position: relative; border-top: 1px solid rgba(255, 255, 255, 0.1); font-weight: 500; }
+  .panel li:first-child { border-top: 0; }
+  .panel li::before {
+    content: ''; position: absolute; left: 0; top: 1.05rem; width: 0.9rem; height: 0.9rem;
+    background: var(--orange); clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+  .shapes { position: absolute; inset: 0; pointer-events: none; }
+  .tri { position: absolute; width: 0; height: 0; border-style: solid; opacity: 0.9; }
+  .t1 { right: -40px; top: -40px; border-width: 0 0 180px 180px; border-color: transparent transparent var(--yellow) transparent; }
+  .t2 { right: 120px; top: 0; border-width: 0 90px 90px 0; border-color: transparent var(--orange) transparent transparent; animation: float 9s ease-in-out infinite; }
+  .t3 { left: -60px; bottom: -60px; border-width: 120px 0 0 120px; border-color: transparent transparent transparent var(--orange); }
+  .t4 { left: 40px; bottom: 30px; border-width: 0 40px 40px 0; border-color: transparent var(--yellow) transparent transparent; animation: float 11s ease-in-out infinite reverse; }
+  @keyframes float { 50% { transform: translateY(14px) rotate(4deg); } }
+  @media (prefers-reduced-motion: reduce) { .t2, .t4 { animation: none; } }
+  @media (max-width: 860px) { .inner { grid-template-columns: 1fr; } }
+</style>

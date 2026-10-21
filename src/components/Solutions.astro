@@ -1,0 +1,33 @@
+---
+import ServicesExplorer from './ServicesExplorer.jsx';
+import { services, serviceModels } from '../data/content.js';
+---
+<section class="section soft" id="solutions">
+  <div class="container">
+    <div class="head reveal">
+      <span class="eyebrow">Our products &amp; solutions</span>
+      <h2>Everything ELV, under one roof</h2>
+      <p class="lead">
+        A wide range of products, from high-performance to standard and economical, to suit your Extra Low Voltage requirements.
+        Filter by category or search to find what you need.
+      </p>
+    </div>
+
+    <ServicesExplorer client:visible services={services} />
+
+    <div class="models reveal">
+      <h3>How we work with you</h3>
+      <ul>
+        {serviceModels.map((m) => <li>{m}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .head { margin-bottom: 2rem; }
+  .models { margin-top: 3rem; background: var(--navy); color: #dfe4ee; border-radius: var(--radius); padding: 1.8rem 2rem; }
+  .models h3 { color: var(--yellow); margin-bottom: 1rem; }
+  .models ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .models li { border: 1px solid rgba(255, 255, 255, 0.25); padding: 0.4rem 0.95rem; border-radius: 999px; font-size: 0.88rem; font-weight: 500; }
+</style>

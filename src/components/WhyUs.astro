@@ -1,0 +1,33 @@
+---
+import { whyUs } from '../data/content.js';
+---
+<section class="section dark" id="why">
+  <div class="container">
+    <div class="head reveal">
+      <span class="eyebrow">Why choose us</span>
+      <h2>More than security</h2>
+      <p class="lead">
+        Highly skilled staff delivering cost-effective, value-added services: consultancy, system integration and
+        market-leading after-sale support, so you are assured of the optimal solution.
+      </p>
+    </div>
+    <div class="grid cols">
+      {whyUs.map((w, i) => (
+        <article class="item reveal">
+          <span class="num">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{w.title}</h3>
+          <p>{w.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .head { margin-bottom: 2.5rem; }
+  .cols { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+  .item { padding: 1.6rem; border-radius: var(--radius); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); }
+  .num { color: var(--yellow); font-weight: 800; font-size: 0.95rem; letter-spacing: 0.1em; }
+  .item h3 { margin: 0.4rem 0 0.5rem; }
+  .item p { margin: 0; color: #b9c1d3; font-size: 0.95rem; }
+</style>

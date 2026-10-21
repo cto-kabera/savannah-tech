@@ -1,0 +1,29 @@
+---
+import ContactForm from './ContactForm.jsx';
+import { company } from '../data/content.js';
+---
+<section class="section dark" id="contact">
+  <div class="container wrap">
+    <div class="info reveal">
+      <span class="eyebrow">Contact us</span>
+      <h2>Let's plan your project</h2>
+      <p class="lead">Tell us about your property and we will come back with a tailored ELV proposal.</p>
+      <ul>
+        <li><strong>Visit</strong><span>{company.address.map((l) => <>{l}<br /></>)}</span></li>
+        <li><strong>Call</strong><a href={`tel:${company.phone.replace(/\s/g, '')}`}>{company.phone}</a></li>
+        <li><strong>Email</strong><a href={`mailto:${company.email}`}>{company.email}</a></li>
+      </ul>
+    </div>
+    <ContactForm client:visible email={company.email} />
+  </div>
+</section>
+
+<style>
+  .wrap { display: grid; gap: 3rem; grid-template-columns: 1fr 1.1fr; align-items: start; }
+  .info ul { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; gap: 1.2rem; }
+  .info li { display: grid; gap: 0.15rem; border-left: 4px solid var(--yellow); padding-left: 1rem; }
+  .info strong { color: var(--yellow); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em; }
+  .info a { text-decoration: none; }
+  .info a:hover { text-decoration: underline; }
+  @media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } }
+</style>

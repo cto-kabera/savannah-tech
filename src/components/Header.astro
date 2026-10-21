@@ -1,0 +1,68 @@
+---
+const links = [
+  ['About', '#about'],
+  ['Solutions', '#solutions'],
+  ['Why us', '#why'],
+  ['Projects', '#projects'],
+  ['Partners', '#partners'],
+  ['Contact', '#contact'],
+];
+---
+<header class="site-header">
+  <div class="container bar">
+    <a href="#top" class="brand" aria-label="Savannah Technology home">
+      <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#FFCE00" />
+        <path d="M42 18c-3-4-16-5-18 3-2 7 14 7 16 14 2 8-12 11-19 4" fill="none" stroke="#252F47" stroke-width="7" stroke-linecap="round" />
+      </svg>
+      <span>savannah</span>
+    </a>
+    <button class="burger" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="nav" class="nav">
+      {links.map(([label, href]) => <a href={href}>{label}</a>)}
+      <a href="#contact" class="btn btn-primary small">Get a quote</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; font-weight: 800; font-size: 1.4rem; color: var(--navy); }
+  .nav { display: flex; align-items: center; gap: 1.6rem; }
+  .nav a:not(.btn) { text-decoration: none; font-weight: 600; font-size: 0.92rem; color: var(--ink); }
+  .nav a:not(.btn):hover { color: var(--orange); }
+  .small { padding: 0.55rem 1.1rem; font-size: 0.85rem; }
+  .burger { display: none; background: none; border: 0; padding: 8px; cursor: pointer; }
+  .burger span { display: block; width: 24px; height: 2px; background: var(--navy); margin: 5px 0; transition: transform 0.2s; }
+  @media (max-width: 860px) {
+    .burger { display: block; }
+    .nav {
+      position: absolute; top: 68px; left: 0; right: 0; background: #fff;
+      flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1.2rem 1.5rem 1.6rem;
+      border-bottom: 1px solid var(--line); display: none;
+    }
+    .nav.open { display: flex; }
+  }
+</style>
+
+<script>
+  const burger = document.querySelector('.burger');
+  const nav = document.getElementById('nav');
+  burger?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('open');
+    burger.setAttribute('aria-expanded', String(!!open));
+  });
+  nav?.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => {
+      nav.classList.remove('open');
+      burger?.setAttribute('aria-expanded', 'false');
+    })
+  );
+</script>

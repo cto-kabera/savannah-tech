@@ -1,0 +1,36 @@
+---
+import { about, vmc } from '../data/content.js';
+---
+<section class="section" id="about">
+  <div class="container">
+    <div class="head reveal">
+      <span class="eyebrow">About us</span>
+      <h2>One partner from consultancy to maintenance</h2>
+      <p class="lead">{about.intro}</p>
+      <p class="lead">{about.detail}</p>
+      <ul class="chips" aria-label="Industries we serve">
+        {about.industries.map((i) => <li>{i}</li>)}
+      </ul>
+    </div>
+    <div class="grid cols reveal">
+      {vmc.map((v) => (
+        <article class="card">
+          <h3>{v.title}</h3>
+          <p>{v.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .head { margin-bottom: 2.5rem; }
+  .chips { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .chips li {
+    background: #fff8d6; border: 1px solid var(--yellow); color: var(--navy);
+    padding: 0.4rem 0.95rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600;
+  }
+  .cols { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card { border-top: 4px solid var(--yellow); }
+  .card p { color: var(--muted); font-size: 0.95rem; margin: 0; }
+</style>
