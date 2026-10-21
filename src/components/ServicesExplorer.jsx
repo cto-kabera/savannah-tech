@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useMemo, useState } from 'react/hooks';
 
 // Interactive solutions explorer: filter by category, search, and expand a card.
 export default function ServicesExplorer({ services }) {

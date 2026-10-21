@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState } from 'react/hooks';
 
 // Filterable project list drawn from the "Clients" page of the company profile.
 export default function ProjectsExplorer({ projects }) {

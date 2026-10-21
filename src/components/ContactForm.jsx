@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useState } from 'react/hooks';
 
 const INTERESTS = [
   'CCTV', 'Access control', 'Structured cabling', 'Fire detection', 'Intrusion detection',
