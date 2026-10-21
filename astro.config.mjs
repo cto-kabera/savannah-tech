@@ -1,8 +1,12 @@
 import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 
+import react from '@astrojs/react';
+
 // Set `site` to your real domain before deploying (used for canonical URLs / sitemap).
 export default defineConfig({
-  site: 'https://cto-kabera.github.io',
   // base: 'savannah-tech',
+  site: 'https://cto-kabera.github.io',
+
+  integrations: [react()],
 });
