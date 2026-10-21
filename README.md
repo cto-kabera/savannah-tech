@@ -2,6 +2,6 @@
 
 Landing page built from the Savannah Technology company profile.
 
-Using Astro pages
+Using Astro pages.
 
 
