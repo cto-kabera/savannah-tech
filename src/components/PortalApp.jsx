@@ -149,7 +149,7 @@ export default function PortalApp({ apiBase }) {
 
   const filtered = quotes.filter((quote) => {
     const status = quote.status || 'open';
-    if (filter === 'active' && status === 'done') return false;
+    if (filter === 'active' && status !== 'open') return false;
     if (filter !== 'active' && status !== filter) return false;
     const hay = `${quote.name} ${quote.contact} ${quote.message} ${(quote.interests || []).join(' ')} ${STATUS_LABELS[status] || ''}`.toLowerCase();
     return hay.includes(q.trim().toLowerCase());
