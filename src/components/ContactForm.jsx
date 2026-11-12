@@ -1,46 +1,56 @@
 import { useState } from 'preact/hooks';
+import { INTERESTS } from '../data/quote.js';
 
-const INTERESTS = [
-  'CCTV', 'Access control', 'Structured cabling', 'Fire detection', 'Intrusion detection',
-  'PA / Audio-visual', 'Building management', 'Power backup', 'Data center', 'AMC / maintenance',
-];
-
-// There is no backend yet. Submitting opens the visitor's email app with the message pre-filled.
-// To post to a service instead (Formspree, Web3Forms, your own API), replace `send` below.
-export default function ContactForm({ email }) {
-  const [f, setF] = useState({ name: '', contact: '', message: '' });
+export default function ContactForm({ email, action }) {
+  const [f, setF] = useState({ name: '', contact: '', message: '', website: '' });
   const [picked, setPicked] = useState([]);
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
   const [err, setErr] = useState('');
 
   const toggle = (i) => setPicked((p) => (p.includes(i) ? p.filter((x) => x !== i) : [...p, i]));
   const set = (k) => (e) => setF({ ...f, [k]: e.currentTarget.value });
 
-  const send = (e) => {
+  const send = async (e) => {
     e.preventDefault();
     if (!f.name.trim() || !f.contact.trim() || !f.message.trim()) {
       setErr('Please fill in your name, how to reach you, and a short message.');
       return;
     }
     setErr('');
-    const subject = `Quote request from ${f.name}`;
-    const body = [
-      `Name: ${f.name}`,
-      `Phone / email: ${f.contact}`,
-      picked.length ? `Interested in: ${picked.join(', ')}` : '',
-      '',
-      f.message,
-    ].filter((l, i) => l !== '' || i > 0).join('\n');
-    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    setSending(true);
+    try {
+      const res = await fetch(action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: f.name,
+          contact: f.contact,
+          message: f.message,
+          interests: picked,
+          website: f.website,
+        }),
+      });
+      let data = {};
+      try { data = await res.json(); } catch { /* non-JSON error page */ }
+      if (!res.ok) {
+        setErr(data.error || `We could not save your request. Email us at ${email}.`);
+        return;
+      }
+      setSent(true);
+    } catch {
+      setErr(`We could not save your request. Email us at ${email}.`);
+    } finally {
+      setSending(false);
+    }
   };
 
   if (sent) {
     return (
       <div class="done" role="status">
         <h3>Thank you, {f.name.split(' ')[0]}!</h3>
-        <p>Your email app should have opened with your message ready to send. If it did not, write to us directly at <a href={`mailto:${email}`}>{email}</a>.</p>
-        <button class="btn btn-primary" onClick={() => setSent(false)}>Send another</button>
+        <p>We have your request and will be in touch. You can also reach us at <a href={`mailto:${email}`}>{email}</a>.</p>
+        <button class="btn btn-primary" type="button" onClick={() => setSent(false)}>Send another</button>
         <style>{`.done{background:#fff;border-radius:var(--radius);padding:2rem;color:var(--ink)} .done h3{color:var(--navy)}`}</style>
       </div>
     );
@@ -48,6 +58,12 @@ export default function ContactForm({ email }) {
 
   return (
     <form class="cf" onSubmit={send} noValidate>
+      <div class="hp" aria-hidden="true">
+        <label>
+          Website
+          <input value={f.website} onInput={set('website')} tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
       <fieldset>
         <legend>What do you need?</legend>
         <div class="chips">
@@ -79,7 +95,7 @@ export default function ContactForm({ email }) {
       </label>
 
       {err && <p class="err" role="alert">{err}</p>}
-      <button class="btn btn-primary" type="submit">Send request</button>
+      <button class="btn btn-primary" type="submit" disabled={sending}>{sending ? 'Sending…' : 'Send request'}</button>
 
       <style>{`
         .cf { background: #fff; color: var(--ink); border-radius: var(--radius); padding: 1.8rem; display: grid; gap: 1.1rem; }
@@ -93,6 +109,8 @@ export default function ContactForm({ email }) {
         .cf input:focus, .cf textarea:focus, .cf .chip:focus-visible { outline: 3px solid var(--orange); outline-offset: 1px; }
         .cf .err { color: #b3261e; margin: 0; font-size: 0.9rem; font-weight: 600; }
         .cf .btn { justify-self: start; }
+        .cf .btn:disabled { opacity: 0.7; cursor: wait; }
+        .cf .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
       `}</style>
     </form>
   );

@@ -1,6 +1,8 @@
 ---
 import ContactForm from './ContactForm.jsx';
 import { company } from '../data/content.js';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <section class="section dark" id="contact">
   <div class="container wrap">
@@ -14,7 +16,7 @@ import { company } from '../data/content.js';
         <li><strong>Email</strong><a href={`mailto:${company.email}`}>{company.email}</a></li>
       </ul>
     </div>
-    <ContactForm client:visible email={company.email} />
+    <ContactForm client:visible email={company.email} action={`${base}/api/quote`} />
   </div>
 </section>
 
