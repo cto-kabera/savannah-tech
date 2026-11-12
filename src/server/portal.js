@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { listQuotes } from './quote-db.js';
+import { listQuotes, setQuoteStatus } from './quote-db.js';
 
 const COOKIE = 'st_portal';
 
@@ -80,5 +80,25 @@ export async function portalQuotes(cookieHeader) {
     }
     console.error('portal list failed');
     return { status: 500, payload: { error: 'We could not load quote requests.' } };
+  }
+}
+
+export async function portalSetStatus(cookieHeader, body) {
+  if (!portalAuthed(cookieHeader)) {
+    return { status: 401, payload: { error: 'Sign in to view requests.' } };
+  }
+  const id = body && typeof body.id === 'string' ? body.id : body && typeof body.id === 'number' ? String(body.id) : '';
+  const status = body && typeof body.status === 'string' ? body.status : '';
+  try {
+    await setQuoteStatus(id, status);
+    return { status: 200, payload: { ok: true, id, status } };
+  } catch (error) {
+    if (error.code === 'NO_DATABASE') {
+      return { status: 503, payload: { error: 'Quote storage is not configured yet.' } };
+    }
+    if (error.code === 'BAD_STATUS') return { status: 400, payload: { error: 'Invalid request.' } };
+    if (error.code === 'NOT_FOUND') return { status: 404, payload: { error: 'That request is no longer listed.' } };
+    console.error('portal status failed');
+    return { status: 500, payload: { error: 'We could not update that request.' } };
   }
 }

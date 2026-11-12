@@ -1,3 +1,12 @@
+export const QUOTE_STATUSES = ['open', 'follow_up', 'closed', 'done'];
+
+export const STATUS_LABELS = {
+  open: 'Open',
+  follow_up: 'Follow up',
+  closed: 'Closed',
+  done: 'Done',
+};
+
 export const INTERESTS = [
   'CCTV',
   'Access control',

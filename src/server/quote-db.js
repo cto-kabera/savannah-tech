@@ -1,6 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import { readFileSync } from 'node:fs';
-import { parseQuote } from '../data/quote.js';
+import { parseQuote, QUOTE_STATUSES } from '../data/quote.js';
 
 let schemaReady = null;
 
@@ -29,16 +29,22 @@ function database() {
 
 async function ensureSchema(sql) {
   if (!schemaReady) {
-    schemaReady = sql`
-      CREATE TABLE IF NOT EXISTS quote_requests (
-        id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-        name text NOT NULL,
-        contact text NOT NULL,
-        interests text[] NOT NULL DEFAULT '{}',
-        message text NOT NULL,
-        created_at timestamptz NOT NULL DEFAULT now()
-      )
-    `.catch((error) => {
+    schemaReady = (async () => {
+      await sql`
+        CREATE TABLE IF NOT EXISTS quote_requests (
+          id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          name text NOT NULL,
+          contact text NOT NULL,
+          interests text[] NOT NULL DEFAULT '{}',
+          message text NOT NULL,
+          created_at timestamptz NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        ALTER TABLE quote_requests
+        ADD COLUMN IF NOT EXISTS status text NOT NULL DEFAULT 'open'
+      `;
+    })().catch((error) => {
       schemaReady = null;
       throw error;
     });
@@ -50,7 +56,7 @@ export async function listQuotes() {
   const sql = database();
   await ensureSchema(sql);
   const rows = await sql`
-    SELECT id, name, contact, interests, message, created_at
+    SELECT id, name, contact, interests, message, status, created_at
     FROM quote_requests
     ORDER BY created_at DESC
     LIMIT 200
@@ -61,8 +67,30 @@ export async function listQuotes() {
     contact: row.contact,
     interests: Array.isArray(row.interests) ? row.interests : [],
     message: row.message,
+    status: QUOTE_STATUSES.includes(row.status) ? row.status : 'open',
     createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : String(row.created_at),
   }));
+}
+
+export async function setQuoteStatus(id, status) {
+  if (!/^\d+$/.test(String(id)) || !QUOTE_STATUSES.includes(status)) {
+    const error = new Error('Invalid status');
+    error.code = 'BAD_STATUS';
+    throw error;
+  }
+  const sql = database();
+  await ensureSchema(sql);
+  const rows = await sql`
+    UPDATE quote_requests
+    SET status = ${status}
+    WHERE id = ${Number(id)}
+    RETURNING id
+  `;
+  if (!rows.length) {
+    const error = new Error('Quote not found');
+    error.code = 'NOT_FOUND';
+    throw error;
+  }
 }
 
 export async function saveQuote(quote) {

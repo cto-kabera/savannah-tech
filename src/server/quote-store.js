@@ -1,5 +1,5 @@
 import { acceptQuote, tooMany } from './quote-db.js';
-import { loginPortal, logoutPortal, portalQuotes } from './portal.js';
+import { loginPortal, logoutPortal, portalQuotes, portalSetStatus } from './portal.js';
 
 function readBody(req) {
   return new Promise((resolve, reject) => {
@@ -76,6 +76,18 @@ export function quoteApi() {
 
         if (req.method === 'GET' && path.endsWith('/api/portal/quotes')) {
           const result = await portalQuotes(cookieHeader(req));
+          return send(res, result.status, result.payload);
+        }
+
+        if (req.method === 'POST' && path.endsWith('/api/portal/status')) {
+          if (tooMany(ip)) return send(res, 429, { error: 'Too many requests. Please wait a minute and try again.' });
+          let body;
+          try {
+            body = JSON.parse(await readBody(req) || '{}');
+          } catch {
+            return send(res, 400, { error: 'Invalid request.' });
+          }
+          const result = await portalSetStatus(cookieHeader(req), body);
           return send(res, result.status, result.payload);
         }
 
