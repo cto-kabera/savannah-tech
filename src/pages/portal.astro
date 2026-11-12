@@ -1,0 +1,54 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PortalApp from '../components/PortalApp.jsx';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Layout
+  title="Quote portal | Savannah Technology"
+  description="Staff portal for Savannah Technology quote requests."
+  noindex
+>
+  <header class="portal-top">
+    <div class="container bar">
+      <a class="brand" href={`${base}/`}>savannah</a>
+      <span class="tag">Staff portal</span>
+    </div>
+  </header>
+  <main class="portal-main">
+    <div class="container">
+      <PortalApp client:load apiBase={base} />
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .portal-top {
+    background: var(--navy);
+    color: #fff;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .brand {
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--yellow);
+  }
+  .tag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #b9c1d3;
+  }
+  .portal-main {
+    padding: 2rem 0 4rem;
+    min-height: calc(100vh - 64px);
+    background: var(--soft);
+  }
+</style>

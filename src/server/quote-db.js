@@ -46,6 +46,25 @@ async function ensureSchema(sql) {
   await schemaReady;
 }
 
+export async function listQuotes() {
+  const sql = database();
+  await ensureSchema(sql);
+  const rows = await sql`
+    SELECT id, name, contact, interests, message, created_at
+    FROM quote_requests
+    ORDER BY created_at DESC
+    LIMIT 200
+  `;
+  return rows.map((row) => ({
+    id: String(row.id),
+    name: row.name,
+    contact: row.contact,
+    interests: Array.isArray(row.interests) ? row.interests : [],
+    message: row.message,
+    createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : String(row.created_at),
+  }));
+}
+
 export async function saveQuote(quote) {
   const sql = database();
   await ensureSchema(sql);

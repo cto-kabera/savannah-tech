@@ -23,10 +23,35 @@ function cleanMessage(value, max) {
   return value.replace(/\r\n/g, '\n').trim().slice(0, max + 1);
 }
 
+function looksLikeEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 function looksLikeContact(value) {
-  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return true;
+  if (looksLikeEmail(value)) return true;
   const digits = value.replace(/\D/g, '');
   return digits.length >= 7 && digits.length <= 15 && /^[+().\-\s\d]+$/.test(value);
+}
+
+function whatsappNumber(value) {
+  let digits = value.replace(/\D/g, '');
+  if (digits.startsWith('00')) digits = digits.slice(2);
+  if (digits.length === 10 && digits.startsWith('0')) digits = `254${digits.slice(1)}`;
+  if (digits.length === 9 && digits.startsWith('7')) digits = `254${digits}`;
+  return digits;
+}
+
+export function classifyContact(value) {
+  const contact = typeof value === 'string' ? value.trim() : '';
+  if (looksLikeEmail(contact)) {
+    return { kind: 'email', label: contact, mailto: `mailto:${contact}` };
+  }
+  const digits = contact.replace(/\D/g, '');
+  if (digits.length >= 7 && digits.length <= 15 && /^[+().\-\s\d]+$/.test(contact)) {
+    const tel = `tel:${contact.replace(/[^\d+]/g, '')}`;
+    return { kind: 'phone', label: contact, tel, whatsapp: `https://wa.me/${whatsappNumber(contact)}` };
+  }
+  return { kind: 'unknown', label: contact };
 }
 
 // Returns a quote, a honeypot hit, or a message safe to show the visitor.
